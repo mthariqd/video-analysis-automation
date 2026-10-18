@@ -45,17 +45,17 @@ https://github.com/user-attachments/assets/31bfbcb7-30d6-4e1b-a849-686c7b6bef26
 **Video Analysis Automation** is a web-based tool that automates the creation of vertical short-form content from raw video footage. It provides a **Flask-powered web UI** with real-time progress tracking via Socket.IO, and leverages AI models for vision analysis, script generation, speech synthesis, and subtitle styling.
 
 ### Core Features
-*   **🌐 Web Interface**: Real-time dashboard with drag-and-drop upload, live pipeline progress, script editor, and audio preview.
-*   **📂 Auto-Select from `v_raw`**: Automatically pick the oldest unprocessed video from the `v_raw` directory. Processed files are moved to `v_fin` after download.
-*   **👁️ Computer Vision Analysis**: Uses Salesforce/BLIP to convert visual frames into textual descriptions, enabling content-aware script generation.
-*   **🤖 AI Script Generation**: Uses **Ollama (LLaMA 3.1)** to analyze video content and generate engaging narration scripts, with regenerate, extend, and reduce controls.
-*   **🏷️ AI Title Generation**: Automatically generates a video title from the approved script using a second Ollama prompt.
-*   **🔊 TTS Audio Preview**: Generates speech via **Kokoro-82M** TTS with in-browser audio preview before approval.
-*   **🎵 Background Music**: Optionally mixes a background music track into the final video at configurable volume.
-*   **🔇 Mute Raw Audio**: Strip the original video's audio before processing.
-*   **📝 Human-in-the-Loop**: Review, edit, regenerate, extend, or reduce the AI script before approving — all from the web UI.
-*   **🎬 Vertical Adaptation**: Automatically crops or letterboxes footage into 9:16 vertical format.
-*   **✨ Precise Subtitling**: Uses **OpenAI Whisper** (`stable-ts`) for word-level timestamps with custom ASS-styled subtitles.
+*   ** Web Interface**: Real-time dashboard with drag-and-drop upload, live pipeline progress, script editor, and audio preview.
+*   ** Auto-Select from `v_raw`**: Automatically pick the oldest unprocessed video from the `v_raw` directory. Processed files are moved to `v_fin` after download.
+*   ** Computer Vision Analysis**: Uses Salesforce/BLIP to convert visual frames into textual descriptions, enabling content-aware script generation.
+*   ** AI Script Generation**: Uses **Ollama (LLaMA 3.1)** to analyze video content and generate engaging narration scripts, with regenerate, extend, and reduce controls.
+*   ** AI Title Generation**: Automatically generates a video title from the approved script using a second Ollama prompt.
+*   ** TTS Audio Preview**: Generates speech via **Kokoro-82M** TTS with in-browser audio preview before approval.
+*   ** Background Music**: Optionally mixes a background music track into the final video at configurable volume.
+*   ** Mute Raw Audio**: Strip the original video's audio before processing.
+*   ** Human-in-the-Loop**: Review, edit, regenerate, extend, or reduce the AI script before approving — all from the web UI.
+*   ** Vertical Adaptation**: Automatically crops or letterboxes footage into 9:16 vertical format.
+*   ** Precise Subtitling**: Uses **OpenAI Whisper** (`stable-ts`) for word-level timestamps with custom ASS-styled subtitles.
 
 ---
 
@@ -230,7 +230,7 @@ Common settings you may want to adjust:
 ### Web UI (recommended)
 Start the Flask development server:
 ```bash
-python app.py
+python server/app.py
 ```
 Then open **http://localhost:5000** in your browser.
 
@@ -249,26 +249,26 @@ You can also run individual steps from the command line. Step numbers below matc
 
 ```bash
 # Step 1 — Analyze video
-python analyze_cat_video.py --video video1.mp4 --out output.txt --fps 1.0
+python server/analyze_cat_video.py --video temp/video1.mp4 --out temp/output.txt --fps 1.0
 
 # Step 2 — Generate script via Ollama
-python ollama_generate_script.py
+python server/ollama_generate_script.py
 
 # Step 4 — Generate title via Ollama
-python ollama_generate_title.py
+python server/ollama_generate_title.py
 
 # Step 5 — Generate TTS audio
-python kokoro_heart.py
+python server/kokoro_heart.py
 
 # Step 6 — Generate subtitles
-stable-ts heart_all.wav --output heart_all.srt --output_format srt \
+stable-ts server/heart_all.wav --output temp/heart_all.srt --output_format srt \
   --device cuda --language en --word_timestamps True --max_chars 42 --max_words 3
 
 # Step 7 — Reformat to 9:16
-python rearrange_9x16.py --input video1.mp4 --output output_9x16_letterbox.mp4 --last 3 --letterbox
+python server/rearrange_9x16.py --input temp/video1.mp4 --output temp/output_9x16_letterbox.mp4 --last 3 --letterbox
 
 # Step 8 — Burn subtitles (with optional background music)
-python burn_hardsub_fit_ass.py --keep_font_color --ass_color_order rgb \
+python server/burn_hardsub_fit_ass.py --keep_font_color --ass_color_order rgb \
   --margin_v_ratio 0.24 --base_scale 0.056 --add-music
 ```
 
@@ -309,3 +309,4 @@ This project is released under the **MIT License**. See [`LICENSE`](LICENSE) for
 *[Back to Top](#video-analysis-automation)*
 
 </div>
+    

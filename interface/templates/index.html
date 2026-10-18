@@ -8,7 +8,7 @@
     <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 </head>
 
 <body>
@@ -31,7 +31,7 @@
             <div class="progress-container">
 
                 <div class="progress-header">
-                    <h2 class="progress-label">📚 Overall Progress</h2>
+                    <h2 class="progress-label">Overall Progress</h2>
                     <span class="progress-percentage" id="progressPercentage">0%</span>
                 </div>
                 <div class="progress-bar">
@@ -47,10 +47,10 @@
             <section class="card media-card">
                 <div class="card-header">
                     <div class="media-header-actions" style="display: flex; justify-content: space-between; align-items: center; width: 100%;">
-                        <h2 class="section-title" style="margin: 0;">📼 Media Input</h2>
+                        <h2 class="section-title" style="margin: 0;">Media Input</h2>
                         
                         <button class="btn-danger-outline hidden" id="removeVideoBtn"
-                            style="background: #e53e3e; color: white; border: none; padding: 0.35rem 0.85rem; border-radius: 6px; font-size: 0.8rem; cursor: pointer;">
+                            style="background: #f5f5f5; color: #0a0a0a; border: none; padding: 0.35rem 0.85rem; border-radius: 6px; font-size: 0.8rem; cursor: pointer;">
                             Remove Video
                         </button>
                     </div>
@@ -109,7 +109,7 @@
                 <div id="filePreview" class="file-preview hidden"></div>
 
                 <button id="startBtn" class="btn-primary">
-                    <span class="btn-icon">🚀</span>
+                    <!-- <span class="btn-icon"></span> -->
                     <span class="btn-text">Start Processing</span>
                 </button>
             </section>
@@ -117,7 +117,7 @@
             <!-- RIGHT: Script Generator -->
             <section class="card script-card">
                 <div class="card-header">
-                    <h2 class="section-title">✏️ Script Generator</h2>
+                    <h2 class="section-title">Script Generator</h2>
                 </div>
 
                 <div class="video-topic-container" style="margin-bottom: var(--spacing-sm);">
@@ -164,7 +164,7 @@
 
         <!-- Progress Section -->
         <section class="card progress-section" id="progressSection">
-            <h2 class="section-title">⚙️ Configurations</h2>
+            <h2 class="section-title">Configurations</h2>
             <br>
             <div class="config-controls">
                 <!-- Mute Audio Control -->
@@ -178,7 +178,7 @@
 
                 <!-- Add Music Control -->
                 <div class="config-item">
-                    <span class="char-label">🗣️ Add Music</span>
+                    <span class="char-label">Add Music</span>
                     <label class="toggle-switch" title="Add background music to the video">
                         <input type="checkbox" id="addMusicToggle">
                         <span class="toggle-slider"></span>
@@ -187,7 +187,7 @@
 
                 <!-- Skip Analysis Control -->
                 <div class="config-item">
-                    <span class="char-label">⏭️ Skip Analysis</span>
+                    <span class="char-label">⏭Skip Analysis</span>
                     <label class="toggle-switch" title="Skip video analysis step">
                         <input type="checkbox" id="skipAnalysisToggle" checked>
                         <span class="toggle-slider"></span>
@@ -196,7 +196,7 @@
 
                 <!-- Chars Count Control -->
                 <div class="config-item char-config">
-                    <span class="char-label">🎯 Target script length:</span>
+                    <span class="char-label">Target script length:</span>
                     <label class="toggle-switch" title="Lock character count for AI generation">
                         <input type="checkbox" id="charLockToggle" checked>
                         <span class="toggle-slider"></span>
@@ -222,14 +222,14 @@
                     <div class="step-item" data-step="2">
                         <div class="step-number">2</div>
                         <div class="step-content">
-                            <div class="step-name">📝 Analysis Approval</div>
+                            <div class="step-name">Analysis Approval</div>
                             <div class="step-description">Review &amp; approve analysis</div>
                         </div>
                     </div>
                     <div class="step-item" data-step="3">
                         <div class="step-number">3</div>
                         <div class="step-content">
-                            <div class="step-name">🤖 AI Script Generation</div>
+                            <div class="step-name">AI Script Generation</div>
                             <div class="step-description">Ollama LLM creates script</div>
                         </div>
                     </div>
@@ -273,7 +273,7 @@
 
             <div class="logs-container">
                 <div class="logs-header">
-                    <h3 class="logs-title">📋 Live Logs</h3>
+                    <h3 class="logs-title">Live Logs</h3>
                     <button id="clearLogsBtn" class="btn-clear">Clear</button>
                 </div>
                 <div class="logs-terminal" id="logsTerminal">
