@@ -7,13 +7,13 @@ import requests
 import re
 from pathlib import Path
 
+from ollama_config import MODEL_NAME, OLLAMA_GENERATE_URL as OLLAMA_URL, TIMEOUT_S, auth_headers
+
 # Fix Windows console encoding for emoji support
 if sys.platform == "win32":
     sys.stdout.reconfigure(encoding='utf-8')
     sys.stderr.reconfigure(encoding='utf-8')
 
-OLLAMA_URL = "http://127.0.0.1:11434/api/generate"
-MODEL_NAME = "llama3.1:latest"
 SCRIPTS_DIR = Path(__file__).parent.resolve()
 SYSTEM_PROMPT_FILE = SCRIPTS_DIR / "system_prompt_title.txt"
 INPUT_FILE = "input.txt"
@@ -51,7 +51,7 @@ def main():
         }
         
         print("[AI] Generating title via Ollama...")
-        resp = requests.post(OLLAMA_URL, json=payload, timeout=120)
+        resp = requests.post(OLLAMA_URL, json=payload, headers=auth_headers(), timeout=TIMEOUT_S)
         resp.raise_for_status()
         
         title = resp.json().get("response", "").strip()

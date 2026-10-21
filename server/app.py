@@ -1,3 +1,5 @@
+import base64
+import hmac
 import os
 import re
 import sys
@@ -5,7 +7,7 @@ import shutil
 import subprocess
 import threading
 from pathlib import Path
-from flask import Flask, render_template, request, send_from_directory, jsonify
+from flask import Flask, Response, render_template, request, send_from_directory, jsonify
 from flask_socketio import SocketIO, emit
 
 # -------------------------------------------------------
@@ -23,13 +25,33 @@ VENV_PYTHON = sys.executable
 # venv Scripts dir (Windows)
 VENV_SCRIPTS = Path(VENV_PYTHON).parent  # ...\.venv\Scripts
 
+# Runtime config (env vars; defaults keep the local Windows/GPU workflow unchanged)
+WHISPER_DEVICE = os.getenv("WHISPER_DEVICE", "cuda")   # "cpu" on Cloud Run without GPU
+WHISPER_MODEL = os.getenv("WHISPER_MODEL", "")         # e.g. "base"; empty = stable-ts default
+APP_USER = os.getenv("APP_USER", "admin")
+APP_PASSWORD = os.getenv("APP_PASSWORD", "")           # set to enable HTTP Basic auth
+USE_SHELL = os.name == "nt"  # shell=True with an argv list only runs argv[0] on Linux
+
 app = Flask(
     __name__,
     template_folder=str(PCC_DIR / "interface" / "templates"),
     static_folder=str(PCC_DIR / "interface" / "static"),
 )
-app.secret_key = "super-secret-thariq"
+app.secret_key = os.getenv("FLASK_SECRET_KEY", "super-secret-thariq")
 socketio = SocketIO(app, cors_allowed_origins="*")
+
+
+@app.before_request
+def basic_auth():
+    """Optional HTTP Basic auth so a public Cloud Run URL can't be used to burn compute."""
+    if not APP_PASSWORD:
+        return None
+    auth = request.authorization
+    if auth and hmac.compare_digest(auth.username or "", APP_USER) and hmac.compare_digest(
+        auth.password or "", APP_PASSWORD
+    ):
+        return None
+    return Response("Authentication required", 401, {"WWW-Authenticate": 'Basic realm="video-analysis"'})
 
 # -------------------------------------------------------
 # HUMAN-IN-THE-LOOP GATES
@@ -171,7 +193,7 @@ def run_cmd(cmd, cwd: Path, step_info):
             text=True,
             encoding='utf-8',  # Explicit UTF-8 to avoid cp1252 errors on Windows
             errors='replace',  # Replace undecodable bytes instead of crashing
-            shell=True,  # Use shell for better Windows compatibility
+            shell=USE_SHELL,  # Windows needs the shell; Linux must exec the argv list directly
             env=env,
         )
 
@@ -595,12 +617,13 @@ def process_pipeline():
             [
                 "stable-ts",
                 "heart_all.wav",
+                *(["--model", WHISPER_MODEL] if WHISPER_MODEL else []),
                 "--output",
                 "heart_all.srt",
                 "--output_format",
                 "srt",
                 "--device",
-                "cuda",
+                WHISPER_DEVICE,
                 "--language",
                 "en",
                 "--word_timestamps",
@@ -994,4 +1017,10 @@ def handle_update_title(data):
 
 
 if __name__ == "__main__":
-    socketio.run(app, host="0.0.0.0", port=5000, debug=True, allow_unsafe_werkzeug=True)
+    socketio.run(
+        app,
+        host=os.getenv("HOST", "0.0.0.0"),
+        port=int(os.getenv("PORT", "5000")),
+        debug=os.getenv("FLASK_DEBUG", "1") == "1",
+        allow_unsafe_werkzeug=True,
+    )

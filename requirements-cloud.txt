@@ -1,0 +1,20 @@
+# Linux / Cloud Run dependencies (UTF-8).
+# server/requirements.txt is a Windows `pip freeze` (UTF-16, CUDA wheels) and won't install on Linux.
+# PyTorch is installed separately in the Dockerfile from the CPU wheel index.
+Flask==3.1.2
+Flask-SocketIO==5.5.1
+simple-websocket==1.1.0
+gunicorn==23.0.0
+requests==2.32.5
+numpy==2.2.6
+pillow==11.3.0
+opencv-python-headless==4.12.0.88
+soundfile==0.13.1
+huggingface-hub==0.35.3
+transformers==4.56.2
+kokoro==0.9.4
+misaki[en]==0.9.4
+spacy==3.8.7
+en_core_web_sm @ https://github.com/explosion/spacy-models/releases/download/en_core_web_sm-3.8.0/en_core_web_sm-3.8.0-py3-none-any.whl
+openai-whisper==20250625
+stable-ts==2.19.1

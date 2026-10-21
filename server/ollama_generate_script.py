@@ -9,14 +9,14 @@ import requests
 import json
 from pathlib import Path
 
+from ollama_config import MODEL_NAME, OLLAMA_GENERATE_URL as OLLAMA_URL, TIMEOUT_S, auth_headers
+
 # Fix Windows console encoding for emoji support
 if sys.platform == "win32":
     sys.stdout.reconfigure(encoding='utf-8')
     sys.stderr.reconfigure(encoding='utf-8')
 
 # Configuration
-OLLAMA_URL = "http://127.0.0.1:11434/api/generate"
-MODEL_NAME = "llama3.1:latest"
 _SCRIPTS_DIR = Path(__file__).parent.resolve()
 DEFAULT_SYSTEM_PROMPT_FILE = str(_SCRIPTS_DIR / "system_prompt.txt")
 INPUT_FILE = "output.txt"
@@ -53,7 +53,7 @@ def call_ollama(system_prompt: str, user_message: str) -> str:
     }
     
     try:
-        response = requests.post(OLLAMA_URL, json=payload, timeout=120)
+        response = requests.post(OLLAMA_URL, json=payload, headers=auth_headers(), timeout=TIMEOUT_S)
         response.raise_for_status()
         
         result = response.json()
@@ -71,7 +71,7 @@ def call_ollama(system_prompt: str, user_message: str) -> str:
             "Make sure Ollama is running with: ollama serve"
         )
     except requests.exceptions.Timeout:
-        raise TimeoutError("Ollama request timed out after 120 seconds")
+        raise TimeoutError(f"Ollama request timed out after {TIMEOUT_S} seconds")
     except Exception as e:
         raise RuntimeError(f"Ollama API error: {str(e)}")
 
