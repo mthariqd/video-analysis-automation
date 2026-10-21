@@ -1,0 +1,14 @@
+.git
+.venv
+__pycache__/
+*.pyc
+archive/
+temp/
+v_raw/
+v_fin/
+v_uploaded/
+*.mp4
+*.wav
+*.srt
+server/requirements.txt
+.gcloudignore

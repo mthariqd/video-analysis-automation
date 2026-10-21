@@ -1,0 +1,14 @@
+.git
+.venv
+__pycache__/
+*.pyc
+archive/
+temp/
+v_raw/
+v_fin/
+v_uploaded/
+ollama/
+*.mp4
+*.wav
+*.srt
+server/requirements.txt
