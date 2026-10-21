@@ -199,8 +199,7 @@ function setupFileUpload() {
     // Reset processing state
     resetProcessingState();
     finalVideoUrl = null;
-    elements.startBtn.querySelector('.btn-icon').textContent = '🚀';
-    elements.startBtn.querySelector('.btn-text').textContent = 'Start Processing';
+    setStartBtn('Start Processing', '🚀');
     elements.startBtn.classList.remove('btn-download-ready');
 
     // Reset script editor
@@ -245,7 +244,7 @@ function setupFileUpload() {
         }
 
         // Load preview from server
-        elements.videoPreview.src = `/files/v_raw/${encodeURIComponent(data.filename)}`;
+        elements.videoPreview.src = `/v_raw/${encodeURIComponent(data.filename)}`;
         elements.dualPreviewContainer.classList.remove('hidden');
         elements.uploadPlaceholder.classList.add('hidden');
         elements.removeVideoBtn.classList.remove('hidden');
@@ -313,11 +312,21 @@ function resetCompletedPanel() {
   elements.completedThumbnail.classList.remove('hidden');
   elements.completedOverlay.classList.remove('hidden');
   elements.completedVideoPreview.classList.add('hidden');
-  elements.completedVideoPreview.src = '';
   elements.completedVideoPreview.pause();
+  // Clear the source cleanly. Setting src='' resolves to the page URL and puts the
+  // element into an error state, so remove the attribute and reset via load() instead.
+  elements.completedVideoPreview.removeAttribute('src');
+  elements.completedVideoPreview.load();
   // Reset overlay text
   elements.completedOverlay.querySelector('.overlay-icon').textContent = '⏳';
   elements.completedOverlay.querySelector('.overlay-text').textContent = 'Waiting for generation...';
+}
+
+// Update the start button label; the icon span is optional (it may be removed from the HTML)
+function setStartBtn(text, icon) {
+  const iconEl = elements.startBtn.querySelector('.btn-icon');
+  if (iconEl) iconEl.textContent = icon;
+  elements.startBtn.querySelector('.btn-text').textContent = text;
 }
 
 function formatFileSize(bytes) {
@@ -358,8 +367,7 @@ function setupStartButton() {
 
       // Reset button back to Start Processing after download
       finalVideoUrl = null;
-      elements.startBtn.querySelector('.btn-icon').textContent = '🚀';
-      elements.startBtn.querySelector('.btn-text').textContent = 'Start Processing';
+      setStartBtn('Start Processing', '🚀');
       elements.startBtn.classList.remove('btn-download-ready');
       return;
     }
@@ -733,8 +741,7 @@ function onProcessingComplete(files) {
   if (finalVideo) {
     finalVideoUrl = `/files/${encodeURIComponent(finalVideo)}`;
     elements.startBtn.disabled = false;
-    elements.startBtn.querySelector('.btn-icon').textContent = '✅';
-    elements.startBtn.querySelector('.btn-text').textContent = 'Download Video';
+    setStartBtn('Download Video', '✅');
     elements.startBtn.classList.add('btn-download-ready');
 
     // Show completed video in the right preview panel
@@ -742,6 +749,18 @@ function onProcessingComplete(files) {
     elements.completedOverlay.classList.add('hidden');
     elements.completedVideoPreview.src = finalVideoUrl;
     elements.completedVideoPreview.classList.remove('hidden');
+    // Force the element to (re)load the new source so it renders the first frame.
+    // Without this, a video whose src was previously cleared stays in a stale/error state.
+    elements.completedVideoPreview.load();
+    // If the browser still can't display it (e.g. unsupported codec), keep the panel usable.
+    elements.completedVideoPreview.addEventListener('error', () => {
+      addLog('⚠ Could not preview the completed video in the browser — use "Download Video".', 'warning');
+      elements.completedVideoPreview.classList.add('hidden');
+      elements.completedThumbnail.classList.remove('hidden');
+      elements.completedOverlay.classList.remove('hidden');
+      elements.completedOverlay.querySelector('.overlay-icon').textContent = '✅';
+      elements.completedOverlay.querySelector('.overlay-text').textContent = 'Ready — download below';
+    }, { once: true });
   } else {
     // Fallback if no final video found
     resetProcessingState();

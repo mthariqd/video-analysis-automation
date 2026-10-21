@@ -19,6 +19,17 @@ SYSTEM_PROMPT_FILE = SCRIPTS_DIR / "system_prompt_title.txt"
 INPUT_FILE = "input.txt"
 OUTPUT_FILE = "generated_title.txt"
 
+def to_plain_text(text: str) -> str:
+    """Strip emoji and other non-plain characters, keeping ASCII letters, digits and punctuation."""
+    replacements = {
+        "‘": "'", "’": "'", "“": '"', "”": '"',
+        "–": "-", "—": "-", "…": "...",
+    }
+    for src, dst in replacements.items():
+        text = text.replace(src, dst)
+    text = re.sub(r"[^\x20-\x7E]", "", text)
+    return " ".join(text.split())
+
 def main():
     try:
         if not SYSTEM_PROMPT_FILE.exists():
@@ -44,11 +55,9 @@ def main():
         resp.raise_for_status()
         
         title = resp.json().get("response", "").strip()
-        # Remove any <think> reasoning blocks that newer models might produce
         title = re.sub(r'<think>.*?</think>', '', title, flags=re.DOTALL | re.IGNORECASE).strip()
         
-        # Flatten into a single line to ensure it generates valid filenames
-        title = ' '.join(title.split())
+        title = to_plain_text(title)
         
         Path(OUTPUT_FILE).write_text(title, encoding="utf-8")
         print(f"[OK] Title generated: {title}")

@@ -153,6 +153,8 @@ def run_cmd(cmd, cwd: Path, step_info):
     env = os.environ.copy()
     # CRITICAL: Prepend venv Scripts so CLI tools (stable-ts, etc.) use venv versions
     env["PATH"] = str(VENV_SCRIPTS) + os.pathsep + env.get("PATH", "")
+    env["PYTHONIOENCODING"] = "utf-8"
+    env["PYTHONUTF8"] = "1"
 
     step_id = step_info["id"]
     emit_step_status(step_id, "running", step_info["description"])
@@ -700,9 +702,23 @@ def process_pipeline():
             if (TEMP_DIR / fname).exists():
                 produced_files.append(fname)
 
+
         maybe_final = final_video_name_from_input_txt()
         if maybe_final and (TEMP_DIR / maybe_final).exists():
             produced_files.append(maybe_final)
+        else:
+            intermediates = {
+                "video1.mp4",
+                "output_9x16_letterbox.mp4",
+                "_video1_muted.mp4",
+            }
+            candidates = [
+                p for p in TEMP_DIR.glob("*.mp4") if p.name not in intermediates
+            ]
+            if candidates:
+                newest = max(candidates, key=lambda p: p.stat().st_mtime)
+                produced_files.append(newest.name)
+                emit_log(f"🎬 Final video detected: {newest.name}")
 
         emit_log("=" * 60)
         emit_log("✅ Pipeline completed successfully!")
@@ -827,6 +843,12 @@ def start_processing():
 def files(filename):
     """Serve output files for download."""
     return send_from_directory(str(TEMP_DIR), filename, as_attachment=False)
+
+
+@app.route("/v_raw/<path:filename>")
+def v_raw_file(filename):
+    """Serve raw videos from v_raw/ (repo root) for the auto-select preview."""
+    return send_from_directory(str(PCC_DIR / "v_raw"), filename, as_attachment=False)
 
 
 @app.route("/existing_files")
