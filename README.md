@@ -24,7 +24,7 @@ https://github.com/user-attachments/assets/31bfbcb7-30d6-4e1b-a849-686c7b6bef26
 
 ## Table of Contents
 
-- [Overview](#-overview)
+- [Overview](#overview)
 - [Key Concepts](#key-concepts)
 - [Architecture](#architecture)
 - [Tech Stack](#tech-stack)
@@ -40,22 +40,22 @@ https://github.com/user-attachments/assets/31bfbcb7-30d6-4e1b-a849-686c7b6bef26
 
 ## Overview
 
-<img width="1400" height="1926" alt="Web dashboard screenshot" src="https://github.com/user-attachments/assets/b02cc74d-560e-4d2d-864e-e856043b2c08" />
+<img width="1710" height="2559" alt="127 0 0 1_5000_ (4)" src="https://github.com/user-attachments/assets/ae799362-67e1-4975-8b19-40a1ae88d518" />
 
 **Video Analysis Automation** is a web-based tool that automates the creation of vertical short-form content from raw video footage. It provides a **Flask-powered web UI** with real-time progress tracking via Socket.IO, and leverages AI models for vision analysis, script generation, speech synthesis, and subtitle styling.
 
 ### Core Features
-*   ** Web Interface**: Real-time dashboard with drag-and-drop upload, live pipeline progress, script editor, and audio preview.
-*   ** Auto-Select from `v_raw`**: Automatically pick the oldest unprocessed video from the `v_raw` directory. Processed files are moved to `v_fin` after download.
-*   ** Computer Vision Analysis**: Uses Salesforce/BLIP to convert visual frames into textual descriptions, enabling content-aware script generation.
-*   ** AI Script Generation**: Uses **Ollama (LLaMA 3.1)** to analyze video content and generate engaging narration scripts, with regenerate, extend, and reduce controls.
-*   ** AI Title Generation**: Automatically generates a video title from the approved script using a second Ollama prompt.
-*   ** TTS Audio Preview**: Generates speech via **Kokoro-82M** TTS with in-browser audio preview before approval.
-*   ** Background Music**: Optionally mixes a background music track into the final video at configurable volume.
-*   ** Mute Raw Audio**: Strip the original video's audio before processing.
-*   ** Human-in-the-Loop**: Review, edit, regenerate, extend, or reduce the AI script before approving — all from the web UI.
-*   ** Vertical Adaptation**: Automatically crops or letterboxes footage into 9:16 vertical format.
-*   ** Precise Subtitling**: Uses **OpenAI Whisper** (`stable-ts`) for word-level timestamps with custom ASS-styled subtitles.
+*   **Web Interface**: Real-time dashboard with drag-and-drop upload, live pipeline progress, script editor, and audio preview.
+*   **Auto-Select from `v_raw`**: Automatically pick the oldest unprocessed video from the `v_raw` directory. Processed files are moved to `v_fin` after download.
+*   **Computer Vision Analysis**: Uses Salesforce/BLIP to convert visual frames into textual descriptions, enabling content-aware script generation.
+*   **AI Script Generation**: Uses **Ollama (LLaMA 3.1)** to analyze video content and generate engaging narration scripts, with regenerate, extend, and reduce controls.
+*   **AI Title Generation**: Automatically generates a video title from the approved script using a second Ollama prompt.
+*   **TTS Audio Preview**: Generates speech via **Kokoro-82M** TTS with in-browser audio preview before approval.
+*   **Background Music**: Optionally mixes a background music track into the final video at configurable volume.
+*   **Mute Raw Audio**: Strip the original video's audio before processing.
+*   **Human-in-the-Loop**: Review, edit, regenerate, extend, or reduce the AI script before approving — all from the web UI.
+*   **Vertical Adaptation**: Automatically crops or letterboxes footage into 9:16 vertical format.
+*   **Precise Subtitling**: Uses **OpenAI Whisper** (`stable-ts`) for word-level timestamps with custom ASS-styled subtitles.
 
 ---
 
